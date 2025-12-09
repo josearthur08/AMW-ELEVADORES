@@ -1,0 +1,5 @@
+<?php
+// backup of consultar.php
+// created automatically
+file_put_contents(__DIR__.'/awm_log.txt', date('c') . ' - BACKUP consultar.php created\n', FILE_APPEND);
+?>

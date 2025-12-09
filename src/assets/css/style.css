@@ -1,0 +1,7 @@
+/* Copied organized CSS - canonical file remains at root/style.css
+   Place to centralize styles for deployment. */
+
+/* Minimal placeholder to ensure layout when using src/public/index.html */
+body{ font-family: 'Montserrat', Arial, sans-serif; background:#f6f9ff; color:#0f1724; margin:0 }
+.container{ max-width:1100px; margin:40px auto; background:#fff; border-radius:10px; padding-bottom:10px }
+/* For full styling use the root style.css */

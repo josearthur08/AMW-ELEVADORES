@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>AWM Elevadores - Sistema</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Montserrat:400,700&display=swap">
+    <link rel="stylesheet" href="style.css">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <style>
+        /* small inline helper to keep diagnostic pre readable (overridable by style.css) */
+        #diagOutput{white-space:pre-wrap;background:#fff;border:1px solid #ddd;padding:12px;margin:12px 0;display:none;max-height:320px;overflow:auto;font-family:monospace;font-size:12px}
+    </style>
+</head>
+<body>
+<div class="container">
+    <header>
+        <div style="display:flex;align-items:center;gap:12px;">
+            <img src="./logo-amw..jpg" class="logo-amw" alt="Logo AMW" />
+            <h1>AWM Elevadores <span>Sistema de Gestão</span></h1>
+        </div>
+        
+    </header>
+
+    <nav class="tabs">
+        <button onclick="showTab('entrada')" id="tabentrada">Entrada</button>
+        <button onclick="showTab('saida')" id="tabsaida">Saída</button>
+        <button onclick="showTab('clientes')" id="tabclientes">Clientes</button>
+        <button onclick="showTab('solicitar')" id="tabsolicitar">Solicitar</button>
+        <button onclick="showTab('programacao')" id="tabprogramacao">Programação</button>
+    </nav>
+
+    <main>
+        <!-- ENTRADA -->
+        <section class="tab" id="entrada">
+            <h2>Entrada de Material</h2>
+            <div class="form-box">
+                <input id="ent_nome" placeholder="Nome do material">
+                <input id="ent_empresa" placeholder="Empresa">
+                <input id="ent_qtd" type="number" placeholder="Quantidade">
+                <input id="ent_vu" type="number" placeholder="Valor unitário">
+                <input id="ent_vt" type="number" placeholder="Valor total">
+                <input id="ent_data" type="date">
+                <input id="ent_horario" type="time">
+                <input id="ent_recebido" placeholder="Recebido por">
+                <button class="primary" onclick="enviarEntrada()">Salvar</button>
+            </div>
+            <h3>Planilha de Entradas</h3>
+            <div class="filter-bar" data-table="tableEntrada">
+                <select id="tableEntrada_filter_by"><option value="text">Texto</option><option value="date">Data</option></select>
+                <input id="tableEntrada_filter_text" placeholder="Pesquisar (serviço, empresa, etc.)">
+                <input id="tableEntrada_filter_date" type="date" style="display:none">
+                <select id="tableEntrada_filter_func"><option value="">Todos</option></select>
+                <button class="small" onclick="clearFilters('tableEntrada')">Limpar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Nome</th><th>Empresa</th><th>Quantidade</th><th>VU</th>
+                            <th>VT</th><th>Data</th><th>Hora</th><th>Recebido</th>
+                            <th>Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableEntrada"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- SAÍDA -->
+        <section class="tab" id="saida">
+            <h2>Saída de Material</h2>
+            <div class="form-box">
+                <input id="sai_nome" placeholder="Nome do material">
+                <input id="sai_obra" placeholder="Obra">
+                <input id="sai_equipe" placeholder="Equipe">
+                <input id="sai_data" type="date">
+                <button class="primary" onclick="enviarSaida()">Salvar</button>
+            </div>
+            <h3>Planilha de Saídas</h3>
+            <div class="filter-bar" data-table="tableSaida">
+                <select id="tableSaida_filter_by"><option value="text">Texto</option><option value="date">Data</option></select>
+                <input id="tableSaida_filter_text" placeholder="Pesquisar (nome, obra, equipe)">
+                <input id="tableSaida_filter_date" type="date" style="display:none">
+                <select id="tableSaida_filter_func"><option value="">Todos</option></select>
+                <button class="small" onclick="clearFilters('tableSaida')">Limpar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Nome</th><th>Obra</th><th>Equipe</th><th>Data</th></tr>
+                    </thead>
+                    <tbody id="tableSaida"></tbody>
+                </table>
+            </div>
+
+            <hr>
+            <h2>Saída do Almoxarifado</h2>
+            <div class="form-box row">
+                <input id="alm_produto" placeholder="Produto">
+                <input id="alm_qtd" type="number" placeholder="Quantidade">
+                <input id="alm_func" placeholder="Funcionário">
+                <input id="alm_data_saida" type="date">
+                <button class="primary" onclick="enviarSaidaAlmox()">Salvar Saída Almox</button>
+            </div>
+            <h3>Planilha de Saídas do Almoxarifado</h3>
+            <div class="filter-bar" data-table="tableSaidaAlmox">
+                <select id="tableSaidaAlmox_filter_by"><option value="text">Texto</option><option value="date">Data</option></select>
+                <input id="tableSaidaAlmox_filter_text" placeholder="Pesquisar (produto, funcionário)">
+                <input id="tableSaidaAlmox_filter_date" type="date" style="display:none">
+                <select id="tableSaidaAlmox_filter_func"><option value="">Todos</option></select>
+                <button class="small" onclick="clearFilters('tableSaidaAlmox')">Limpar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Nome</th><th>Quantidade</th><th>Funcionário</th><th>Data</th></tr>
+                    </thead>
+                    <tbody id="tableSaidaAlmox"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- CLIENTES -->
+        <section class="tab" id="clientes">
+            <h2>Clientes</h2>
+            <div class="form-box row">
+                <input id="cli_nome" placeholder="Nome do cliente">
+                <button class="primary" onclick="addCliente()">Adicionar Cliente</button>
+            </div>
+            <h3>Lista de Clientes</h3>
+            <div class="filter-bar" data-table="tableClientes">
+                <select id="tableClientes_filter_by"><option value="text">Texto</option></select>
+                <input id="tableClientes_filter_text" placeholder="Pesquisar cliente por nome">
+                <select id="tableClientes_filter_func"><option value="">Todos</option></select>
+                <button class="small" onclick="clearFilters('tableClientes')">Limpar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>Nome</th><th>Ações</th></tr>
+                    </thead>
+                    <tbody id="tableClientes"></tbody>
+                </table>
+            </div>
+            <div id="clienteDetalhes" style="display:none; margin-top:24px;">
+                <h3>Relatório do Cliente: <span id="cli_titulo"></span></h3>
+                <div style="display:flex;gap:8px;align-items:center;margin-bottom:8px;">
+                    <div class="form-box" style="flex:1;">
+                        <input id="rel_obra" placeholder="Obra">
+                        <input id="rel_endereco" placeholder="Endereço">
+                        <input id="rel_data" type="date">
+                        <input id="rel_servico" placeholder="Serviço Prestado">
+                        <input id="rel_equipe" placeholder="Equipe">
+                        <button class="primary" onclick="addRelatorio()">Adicionar Relatório</button>
+                    </div>
+                    
+                </div>
+                <h3>Histórico do Cliente</h3>
+                <div class="filter-bar" data-table="tableHistorico">
+                    <select id="tableHistorico_filter_by"><option value="text">Texto</option><option value="date">Data</option></select>
+                    <input id="tableHistorico_filter_text" placeholder="Pesquisar (obra, serviço)">
+                    <input id="tableHistorico_filter_date" type="date" style="display:none">
+                    <select id="tableHistorico_filter_func"><option value="">Todos</option></select>
+                    <button class="small" onclick="clearFilters('tableHistorico')">Limpar</button>
+                </div>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr><th>Obra</th><th>Endereço</th><th>Data</th><th>Serviço</th><th>Equipe</th><th>Ações</th></tr>
+                        </thead>
+                        <tbody id="tableHistorico"></tbody>
+                    </table>
+                </div>
+                
+            </div>
+        </section>
+
+        <!-- SOLICITAR MATERIAL -->
+        <section class="tab" id="solicitar">
+            <h2>Solicitar Material <span class="extra">(adicionar e depois exportar)</span></h2>
+            <div class="form-box row">
+                <input id="sol_nome" placeholder="Nome do material">
+                <input id="sol_qtd" type="number" placeholder="Quantidade">
+                <button class="primary" onclick="addSolicitar()">Adicionar</button>
+                <button class="primary" onclick="gerarExcel()">Exportar Planilha</button>
+            </div>
+            <h3>Itens para Solicitação</h3>
+            <div class="filter-bar" data-table="tableSolicitar">
+                <select id="tableSolicitar_filter_by"><option value="text">Texto</option></select>
+                <input id="tableSolicitar_filter_text" placeholder="Pesquisar material">
+                <button class="small" onclick="clearFilters('tableSolicitar')">Limpar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr><th>#</th><th>Material</th><th>Quantidade</th><th>Ações</th></tr>
+                    </thead>
+                    <tbody id="tableSolicitar"></tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- PROGRAMAÇÃO -->
+        <section class="tab" id="programacao">
+            <h2>Programação</h2>
+                <div class="form-box row">
+                    <input id="prog_obra" placeholder="Obra">
+                    <input id="prog_endereco" placeholder="Endereço">
+                    <input id="prog_servico" placeholder="Serviço">
+                    <input id="prog_data" type="date">
+                    <input id="prog_equipe" placeholder="Equipe">
+                    <button class="primary" onclick="addProgramacao()">Salvar</button>
+                </div>
+            <h3>Planilha de Programação</h3>
+            <div class="filter-bar" data-table="tableProgramacao">
+                <select id="tableProgramacao_filter_by"><option value="text">Texto</option><option value="date">Data</option></select>
+                <input id="tableProgramacao_filter_text" placeholder="Pesquisar (obra, serviço, equipe)">
+                <input id="tableProgramacao_filter_date" type="date" style="display:none">
+                <button class="small" onclick="clearFilters('tableProgramacao')">Limpar</button>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                                <th>Obra</th><th>Endereço</th><th>Serviço</th><th>Data</th><th>Equipe</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableProgramacao"></tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+    <footer>
+        <small>© AWM Elevadores — Todos os direitos reservados.</small>
+    </footer>
+</div>
+<script src="script.js"></script>
+</body>
+</html>

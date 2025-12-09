@@ -1,0 +1,5 @@
+<?php
+// backup of salvar_historico.php
+// created automatically
+file_put_contents(__DIR__.'/awm_log.txt', date('c') . ' - BACKUP salvar_historico.php created\n', FILE_APPEND);
+?>

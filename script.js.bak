@@ -1,0 +1,6 @@
+// backup of script.js
+// created automatically
+(function(){
+    try{ const fs = null; }catch(e){}
+    // Note: backup created
+})();

@@ -1,0 +1,4 @@
+<?php
+// second backup of salvar_historico.php
+file_put_contents(__DIR__.'/awm_log.txt', date('c') . ' - BACKUP2 salvar_historico.php created\n', FILE_APPEND);
+?>

@@ -1,0 +1,1 @@
+Place images used by the frontend here (e.g. logo-amw..jpg). Update `src/public/index.html` to reference `assets/img/<filename>`.
